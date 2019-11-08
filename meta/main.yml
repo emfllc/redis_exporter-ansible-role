@@ -1,0 +1,18 @@
+galaxy_info:
+  author: bilalcaliskan
+  role_name: redis_exporter
+  description: Redis exporter setup role for CentOS/RHEL 7/8 hosts
+  min_ansible_version: 2.6
+  galaxy_tags:
+    - configuration
+    - redis
+    - sentinel
+    - prometheus
+  license: "license (BSD, MIT)"
+  platforms:
+    - name: EL
+      versions:
+        - 7
+        - 8
+
+dependencies: []

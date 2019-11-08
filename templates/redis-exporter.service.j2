@@ -1,0 +1,17 @@
+[Unit]
+Description={{ exporter_type | capitalize }} Exporter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User={{ exporter_user }}
+Group={{ exporter_group }}
+ExecReload=/bin/kill -HUP
+ExecStart=/usr/local/bin/{{ exporter_type }}_exporter --web.listen-address=:{{ exporter_port }}
+
+SyslogIdentifier={{ exporter_type }}_exporter
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
