@@ -38,24 +38,16 @@
 
 - name: Transfer template files to the remote host
   template:
-    src: "{{ item.src_path }}"
-    dest: "{{ item.dest_path }}"
+    src: "{{ exporter_type }}-exporter.service.j2"
+    dest: "/etc/systemd/system/{{ exporter_type }}-exporter.service"
     owner: root
     group: root
     mode: 0644
-  loop:
-    - { src_path: "{{ exporter_type }}-exporter.xml.j2", dest_path: "/etc/firewalld/services/{{ exporter_type }}-exporter.xml" }
-    - { src_path: "{{ exporter_type }}-exporter.service.j2", dest_path: "/etc/systemd/system/{{ exporter_type }}-exporter.service" }
-
-- name: Ensure firewalld is reloaded
-  service:
-    name: firewalld
-    state: reloaded
-    enabled: yes
 
 - name: Manage firewalld configuration
   firewalld:
-    service: "{{ exporter_type }}-exporter"
-    permanent: yes
+    port: "{{ port }}/tcp"
+    permanent: true
+    immediate: true
     state: enabled
   notify: "start and enable {{ exporter_type }}-exporter"
