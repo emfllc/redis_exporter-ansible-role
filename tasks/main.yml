@@ -71,7 +71,6 @@
         permanent: true
         immediate: true
         state: enabled
-      notify: start and enable redis-exporter service
       ignore_errors: true
 
     - name: Set fact redis_exporter_installed
