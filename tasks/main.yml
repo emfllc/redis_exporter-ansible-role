@@ -1,67 +1,88 @@
 ---
 
-- name: Ensure {{ group }} group exists
-  group:
-    name: "{{ group }}"
-    state: present
+- name: Get service facts
+  service_facts:
 
-- name: Ensure {{ user }} user exists
-  user:
-    name: "{{ user }}"
-    shell: /sbin/nologin
-    group: "{{ group }}"
+- name: Check if redis-exporter is installed
+  set_fact:
+    redis_exporter_installed: false
+  when: ansible_facts.services["redis-exporter.service"] is not defined
 
-- name: Ensure required packages are installed
-  yum:
-    name: "{{ required_packages }}"
-    state: present
+- name: Install redis exporter block
+  block:
+    - name: Ensure {{ group }} group exists
+      group:
+        name: "{{ group }}"
+        state: present
 
-- name: Download tar.gz file
-  get_url:
-    url: "{{ download_url }}"
-    dest: "{{ folder_name }}/"
-    owner: "{{ user }}"
-    group: "{{ group }}"
-    mode: 0644
+    - name: Ensure {{ user }} user exists
+      user:
+        name: "{{ user }}"
+        shell: /sbin/nologin
+        group: "{{ group }}"
 
-- name: Extract tar.gz file
-  unarchive:
-    src: "{{ folder_name }}/{{ file_name }}"
-    dest: "{{ folder_name }}"
-    owner: "{{ user }}"
-    group: "{{ group }}"
-    remote_src: true
+    - name: Ensure required packages are installed
+      yum:
+        name: "{{ required_packages }}"
+        state: present
 
-- name: Create a symlink of exporter binary
-  file:
-    src: "{{ folder_name }}/redis_exporter"
-    dest: "/usr/local/bin/redis_exporter"
-    owner: "{{ user }}"
-    group: "{{ group }}"
-    state: link
-    force: true
+    - name: Download tar.gz file
+      get_url:
+        url: "{{ download_url }}"
+        dest: "{{ folder_name }}/"
+        owner: "{{ user }}"
+        group: "{{ group }}"
+        mode: 0644
 
-- name: Transfer systemd template file to the remote host
-  template:
-    src: redis-exporter.service.j2
-    dest: /etc/systemd/system/redis-exporter.service
-    owner: root
-    group: root
-    mode: 0644
+    - name: Extract tar.gz file
+      unarchive:
+        src: "{{ folder_name }}/{{ file_name }}"
+        dest: "{{ folder_name }}"
+        owner: "{{ user }}"
+        group: "{{ group }}"
+        remote_src: true
 
-- name: Ensure firewalld is started and enabled
-  service:
-    name: firewalld
-    state: started
-    enabled: true
+    - name: Create a symlink of exporter binary
+      file:
+        src: "{{ folder_name }}/redis_exporter"
+        dest: "/usr/local/bin/redis_exporter"
+        owner: "{{ user }}"
+        group: "{{ group }}"
+        state: link
+        force: true
 
-- name: Manage firewalld configuration
-  firewalld:
-    port: "{{ port }}/tcp"
-    permanent: true
-    immediate: true
-    state: enabled
-  notify: start and enable redis-exporter service
-  ignore_errors: true
+    - name: Transfer systemd template file to the remote host
+      template:
+        src: redis-exporter.service.j2
+        dest: /etc/systemd/system/redis-exporter.service
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Ensure firewalld is started and enabled
+      service:
+        name: firewalld
+        state: started
+        enabled: true
+
+    - name: Manage firewalld configuration
+      firewalld:
+        port: "{{ port }}/tcp"
+        permanent: true
+        immediate: true
+        state: enabled
+      notify: start and enable redis-exporter service
+      ignore_errors: true
+
+    - name: Set fact redis_exporter_installed
+      set_fact:
+        redis_exporter_installed: true
+      changed_when: true
+      notify: start and enable redis-exporter service
+  rescue:
+    - name: Fail and print message
+      fail:
+        msg: "Got an error inside block, try to rerun tasks with -v option"
+  when: ansible_facts.services["redis-exporter.service"] is not defined
 
 ...
