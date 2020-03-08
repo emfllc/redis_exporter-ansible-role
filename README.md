@@ -1,5 +1,7 @@
 ## Role Name
 
+[![Build Status](https://travis-ci.org/bilalcaliskan/redis-exporter-ansible-role.svg?branch=master)](https://travis-ci.org/bilalcaliskan/redis-exporter-ansible-role)
+
 Installs and configures Redis exporter to monitoring over Prometheus on RHEL/CentOS servers.
 
 ## Requirements
