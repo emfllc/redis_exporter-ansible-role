@@ -62,5 +62,6 @@
     immediate: true
     state: enabled
   notify: start and enable redis-exporter service
+  ignore_errors: true
 
 ...

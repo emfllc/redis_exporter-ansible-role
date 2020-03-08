@@ -5,7 +5,6 @@ services: docker
 
 env:
   global:
-    - ROLE_NAME: redis-exporter
     - USER_NAME: bilalcaliskan
   matrix:
     - MOLECULE_DISTRO: centos7
@@ -16,8 +15,8 @@ install:
 
 before_script:
   - cd ../
-  - mv $ROLE_NAME-ansible-role $USER_NAME.$ROLE_NAME
-  - cd $USER_NAME.$ROLE_NAME
+  - mv redis-exporter-ansible-role $USER_NAME.redis_exporter
+  - cd $USER_NAME.redis_exporter
 
 script:
   - molecule test
