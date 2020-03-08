@@ -6,7 +6,7 @@ galaxy_info:
   galaxy_tags:
     - configuration
     - redis
-    - sentinel
+    - redis_exporter
     - prometheus
   license: "license (BSD, MIT)"
   platforms:
