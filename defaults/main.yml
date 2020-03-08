@@ -3,7 +3,7 @@
 version: 0.21.2
 download_url: https://github.com/oliver006/redis_exporter/releases/download/v{{ version }}/redis_exporter-v{{ version }}.linux-amd64.tar.gz
 folder_name: /opt
-file_name: redis_exporter-v{{ exporter_version }}.linux-amd64.tar.gz
+file_name: redis_exporter-v{{ version }}.linux-amd64.tar.gz
 port: 9121
 user: prometheus
 group: prometheus
