@@ -1,0 +1,12 @@
+---
+
+- name: Verify ports are reachable
+  hosts: all
+  tasks:
+    - name: Ensure exporter port is reachable
+      wait_for:
+        host: localhost
+        port: 9121
+        timeout: 3
+
+...

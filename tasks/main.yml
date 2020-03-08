@@ -1,48 +1,59 @@
 ---
 
-- name: Ensure {{ exporter_group }} group exists
+- name: Ensure {{ group }} group exists
   group:
-    name: "{{ exporter_group }}"
+    name: "{{ group }}"
     state: present
 
-- name: Ensure {{ exporter_user }} user exists
+- name: Ensure {{ user }} user exists
   user:
-    name: "{{ exporter_user }}"
+    name: "{{ user }}"
     shell: /sbin/nologin
-    group: "{{ exporter_user }}"
+    group: "{{ group }}"
+
+- name: Ensure required packages are installed
+  yum:
+    name: "{{ required_packages }}"
+    state: present
 
 - name: Download tar.gz file
   get_url:
-    url: "{{ exporter_download_url }}"
-    dest: "{{ exporter_folder_name }}/"
-    owner: "{{ exporter_user }}"
-    group: "{{ exporter_group }}"
+    url: "{{ download_url }}"
+    dest: "{{ folder_name }}/"
+    owner: "{{ user }}"
+    group: "{{ group }}"
     mode: 0644
 
 - name: Extract tar.gz file
   unarchive:
-    src: "{{ exporter_folder_name }}/{{ exporter_file_name }}"
-    dest: "{{ exporter_folder_name }}"
-    owner: "{{ exporter_user }}"
-    group: "{{ exporter_group }}"
-    remote_src: yes
+    src: "{{ folder_name }}/{{ file_name }}"
+    dest: "{{ folder_name }}"
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    remote_src: true
 
 - name: Create a symlink of exporter binary
   file:
-    src: "{{ exporter_folder_name }}/{{ exporter_type }}_exporter"
-    dest: "/usr/local/bin/{{ exporter_type }}_exporter"
-    owner: "{{ exporter_user }}"
-    group: "{{ exporter_group }}"
+    src: "{{ folder_name }}/redis_exporter"
+    dest: "/usr/local/bin/redis_exporter"
+    owner: "{{ user }}"
+    group: "{{ group }}"
     state: link
-    force: yes
+    force: true
 
-- name: Transfer template files to the remote host
+- name: Transfer systemd template file to the remote host
   template:
-    src: "{{ exporter_type }}-exporter.service.j2"
-    dest: "/etc/systemd/system/{{ exporter_type }}-exporter.service"
+    src: redis-exporter.service.j2
+    dest: /etc/systemd/system/redis-exporter.service
     owner: root
     group: root
     mode: 0644
+
+- name: Ensure firewalld is started and enabled
+  service:
+    name: firewalld
+    state: started
+    enabled: true
 
 - name: Manage firewalld configuration
   firewalld:
@@ -50,4 +61,6 @@
     permanent: true
     immediate: true
     state: enabled
-  notify: "start and enable {{ exporter_type }}-exporter"
+  notify: start and enable redis-exporter service
+
+...
