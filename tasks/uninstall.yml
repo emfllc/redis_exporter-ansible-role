@@ -1,0 +1,46 @@
+---
+
+- name: Get service facts
+  service_facts:
+
+- name: Check if redis-exporter is installed
+  set_fact:
+    redis_exporter_installed: true
+  when: ansible_facts.services["redis-exporter.service"] is defined
+
+- name: Remove redis-exporter
+  block:
+    - name: Ensure redis-exporter service stopped and disabled
+      service:
+        name: redis-exporter
+        state: stopped
+        enabled: false
+
+    - name: Revoke firewalld permissions
+      firewalld:
+        port: "{{ exporter_port }}/tcp"
+        immediate: true
+        permanent: true
+        state: disabled
+
+    - name: Remove redis-exporter related files and directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /usr/local/bin/redis_exporter
+        - /etc/systemd/system/redis-exporter.service
+        - "{{ base_dir_path }}/redis_exporter"
+      notify: force systemd to reread configs
+
+    - name: Ensure {{ user }} user no more exists
+      user:
+        name: "{{ user }}"
+        state: absent
+
+    - name: Set fact after uninstallation
+      set_fact:
+        redis_exporter_installed: false
+  when: ansible_facts.services["redis-exporter.service"] is defined
+
+...

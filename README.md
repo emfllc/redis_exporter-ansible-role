@@ -1,30 +1,21 @@
-## Role Name
+## Redis Exporter Ansible Role
 
-[![Build Status](https://travis-ci.org/bilalcaliskan/redis-exporter-ansible-role.svg?branch=master)](https://travis-ci.org/bilalcaliskan/redis-exporter-ansible-role)
+[![Build Status](https://travis-ci.org/bilalcaliskan/redis_exporter-ansible-role.svg?branch=master)](https://travis-ci.org/bilalcaliskan/redis_exporter-ansible-role)
 
-Installs and configures Redis exporter to monitoring over Prometheus on RHEL/CentOS servers.
+Installs and configures redis-exporter to expose redis metrics to Prometheus on RHEL/CentOS 7/8 instances.
 
 ## Requirements
 
 No special requirements; note that this role requires root access, so either run it in a playbook with a global `become: yes`, or invoke the role in your playbook like:
 
-    - hosts: redis-cluster
-      roles:
-        - role: redis_exporter
-          become: yes
+      - hosts: all
+        become: true
+        roles:
+          - role: bilalcaliskan.redis_exporter
 
 ## Role Variables
 
-Available variables are listed below, along with default values (see `defaults/main.yml`):
-
-        exporter_type: redis
-        exporter_version: 0.21.2
-        exporter_download_url: https://github.com/oliver006/redis_exporter/releases/download/v{{ exporter_version }}/redis_exporter-v{{ exporter_version }}.linux-amd64.tar.gz
-        exporter_file_name: redis_exporter-v{{ exporter_version }}.linux-amd64.tar.gz
-        exporter_folder_name: /opt
-        exporter_port: 9121
-        exporter_user: prometheus
-        exporter_group: prometheus
+See the default values in 'defaults/main.yml'. You can overwrite them in 'vars/main.yml' if neccessary.
 
 ## Dependencies
 
@@ -32,18 +23,34 @@ None
 
 ## Example Playbook
 
-    - hosts: redis-cluster
-      become: yes
-      vars_files:
-        - vars/main.yml
-      roles:
-        - { role: bilalcaliskan.redis }
+      - hosts: all
+        become: true
+        vars_files:
+          - vars/main.yml
+        roles:
+          - role: bilalcaliskan.redis_exporter
 
 *Inside `vars/main.yml`*:
 
+        version: 0.21.2
         exporter_port: 9121
-        exporter_user: prometheus
-        exporter_group: prometheus
+        user: redisexporter
+        group: redisexporter
+        required_packages:
+          - firewalld
+
+## Playbook for uninstall
+
+      - hosts: all
+        become: true
+        vars_files:
+          - vars/main.yml
+        roles:
+          - role: bilalcaliskan.redis_exporter
+
+*Inside `vars/main.yml`*:
+
+        install_redis_exporter: false
 
 ## License
 

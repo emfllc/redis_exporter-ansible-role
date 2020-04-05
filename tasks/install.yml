@@ -1,0 +1,90 @@
+---
+
+- name: Get service facts
+  service_facts:
+
+- name: Set fact before installation
+  set_fact:
+    redis_exporter_installed: false
+  when: ansible_facts.services["redis-exporter.service"] is not defined
+
+- name: Ensure {{ group }} group exists
+  group:
+    name: "{{ group }}"
+    state: present
+
+- name: Ensure {{ user }} user exists
+  user:
+    name: "{{ user }}"
+    shell: /sbin/nologin
+    group: "{{ group }}"
+
+- name: Ensure required packages are installed
+  package:
+    name: "{{ required_packages }}"
+    state: present
+
+- name: Check if tar file exists
+  stat:
+    path: "{{ file_path }}"
+  register: file_stat_result
+
+- name: Download tar.gz file
+  get_url:
+    url: "{{ download_url }}"
+    dest: "{{ base_dir_path }}/"
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    mode: 0644
+  when: not file_stat_result.stat.exists
+
+- name: Check if binary exists
+  stat:
+    path: "{{ base_dir_path }}/redis_exporter"
+  register: binary_stat_result
+
+- name: Extract tar.gz file
+  unarchive:
+    src: "{{ file_path }}"
+    dest: "{{ base_dir_path }}"
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    remote_src: true
+  when: not binary_stat_result.stat.exists
+
+- name: Create a symlink of redis_exporter binary
+  file:
+    src: "{{ base_dir_path }}/redis_exporter"
+    dest: /usr/local/bin/redis_exporter
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    state: link
+
+- name: Transfer systemd template file to the remote host
+  template:
+    src: redis-exporter.service.j2
+    dest: /etc/systemd/system/redis-exporter.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: start and enable redis-exporter
+
+- name: Ensure firewalld is started and enabled
+  service:
+    name: firewalld
+    state: started
+    enabled: true
+  changed_when: false
+
+- name: Manage firewalld configuration
+  firewalld:
+    port: "{{ exporter_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Set fact after installation
+  set_fact:
+    redis_exporter_installed: true
+
+...
