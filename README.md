@@ -34,8 +34,8 @@ None
 
         version: 0.21.2
         exporter_port: 9121
-        user: redisexporter
-        group: redisexporter
+        user: redis-exporter
+        group: redis-exporter
         required_packages:
           - firewalld
 
