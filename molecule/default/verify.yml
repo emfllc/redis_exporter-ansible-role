@@ -3,6 +3,12 @@
 - name: Verify play
   hosts: all
   tasks:
+    - name: Ensure redis port is reachable
+      wait_for:
+        host: localhost
+        port: 6379
+        timeout: 5
+
     - name: Ensure redis-exporter port is reachable
       wait_for:
         host: localhost

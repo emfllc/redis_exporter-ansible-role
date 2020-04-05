@@ -1,16 +1,16 @@
 [Unit]
 Description=Redis Exporter for Prometheus
-Wants=network-online.target
-After=network-online.target
+Wants=network-online.target redis.service
+After=network-online.target redis.service
 
 [Service]
 Type=simple
 User={{ user }}
 Group={{ group }}
 ExecReload=/bin/kill -HUP
-ExecStart=/usr/local/bin/redis_exporter --web.listen-address=:{{ exporter_port }}
+ExecStart=/usr/local/bin/redis_exporter --web.listen-address=:{{ exporter_port }} --redis.addr=redis://localhost:{{ redis_port }}
 
-SyslogIdentifier=redis_exporter
+SyslogIdentifier=redis-exporter
 Restart=always
 
 [Install]

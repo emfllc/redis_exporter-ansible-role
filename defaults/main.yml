@@ -6,6 +6,7 @@ download_url: https://github.com/oliver006/redis_exporter/releases/download/v{{ 
 base_dir_path: /opt
 file_path: "{{ base_dir_path }}/redis_exporter-v{{ version }}.linux-amd64.tar.gz"
 exporter_port: 9121
+redis_port: 6379
 user: redis-exporter
 group: redis-exporter
 required_packages:

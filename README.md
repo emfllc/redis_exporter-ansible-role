@@ -6,11 +6,22 @@ Installs and configures redis-exporter to expose redis metrics to Prometheus on 
 
 ## Requirements
 
-No special requirements; note that this role requires root access, so either run it in a playbook with a global `become: yes`, or invoke the role in your playbook like:
+This role requires a Running Redis process on the same server. You can set up Redis instances with Sentinel using bilalcaliskan.redis role.
+Note that this role requires root access, so either run it in a playbook with a global `become: yes`, or invoke the role in your playbook like:
+
+*If you have a running Kafka process on the same server*:
 
       - hosts: all
         become: true
         roles:
+          - role: bilalcaliskan.redis_exporter
+
+*If you do not have a running Kafka process on the same server*:
+
+      - hosts: all
+        become: true
+        roles:
+          - role: bilalcaliskan.redis
           - role: bilalcaliskan.redis_exporter
 
 ## Role Variables
