@@ -1,5 +1,6 @@
 ---
 
-- src: bilalcaliskan.redis
+# Get role from galaxy
+- name: bilalcaliskan.redis
 
 ...
