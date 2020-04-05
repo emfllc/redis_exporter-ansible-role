@@ -1,7 +1,9 @@
+---
+
 galaxy_info:
   author: bilalcaliskan
   role_name: redis_exporter
-  description: Redis exporter setup role for CentOS/RHEL 7/8 hosts
+  description: Redis exporter setup role to provide monitoring over Prometheus
   min_ansible_version: 2.6
   galaxy_tags:
     - configuration
@@ -16,3 +18,5 @@ galaxy_info:
         - 8
 
 dependencies: []
+
+...
