@@ -54,7 +54,7 @@
 
 - name: Create a symlink of redis_exporter binary
   file:
-    src: "{{ base_dir_path }}/redis_exporter"
+    src: "{{ extracted_dir_path }}/redis_exporter"
     dest: /usr/local/bin/redis_exporter
     owner: "{{ user }}"
     group: "{{ group }}"
