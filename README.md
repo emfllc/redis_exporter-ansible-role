@@ -2,67 +2,70 @@
 
 [![Build Status](https://travis-ci.org/bilalcaliskan/redis_exporter-ansible-role.svg?branch=master)](https://travis-ci.org/bilalcaliskan/redis_exporter-ansible-role)
 
-Installs and configures redis-exporter to expose redis metrics to Prometheus on RHEL/CentOS 7/8 instances.
+Installs and configures redis-exporter to expose Redis metrics to Prometheus on RHEL/CentOS 7/8 instances.
 
-## Requirements
+### Requirements
 
 This role requires a Running Redis process on the same server. You can set up Redis instances with Sentinel using bilalcaliskan.redis role.
-Note that this role requires root access, so either run it in a playbook with a global `become: yes`, or invoke the role in your playbook like:
+Also note that this role requires root access, so either run it in a playbook with a global `become: true`, or invoke the role in your playbook like:
 
-*If you have a running Kafka process on the same server*:
+*If you have a running Redis process on the same server*:
+```yaml
+- hosts: all
+  become: true
+  roles:
+    - role: bilalcaliskan.redis_exporter
+```
 
-      - hosts: all
-        become: true
-        roles:
-          - role: bilalcaliskan.redis_exporter
+*If you do not have a running Redis process on the same server, it will setup Redis and Redis exporter sequentially*:
+```yaml
+- hosts: all
+  become: true
+  roles:
+    - role: bilalcaliskan.redis
+    - role: bilalcaliskan.redis_exporter
+```
 
-*If you do not have a running Kafka process on the same server*:
+### Role Variables
+See the default values in [defaults/main.yml](defaults/main.yml). You can overwrite them in [vars/main.yml](vars/main.yml) if neccessary or you can set them while running playbook.
 
-      - hosts: all
-        become: true
-        roles:
-          - role: bilalcaliskan.redis
-          - role: bilalcaliskan.redis_exporter
+> Please note that this role will ensure that `firewalld` systemd service on your servers are started and enabled. If your `firewalld` services are stopped and disabled, please modify below variable as false when running playbook:  
+> ```yaml  
+> start_firewalld: false
 
-## Role Variables
-
-See the default values in 'defaults/main.yml'. You can overwrite them in 'vars/main.yml' if neccessary.
-
-## Dependencies
+### Dependencies
 
 None
 
-## Example Playbook
+### Example Playbook File For `Installation`
 
-      - hosts: all
-        become: true
-        vars_files:
-          - vars/main.yml
-        roles:
-          - role: bilalcaliskan.redis_exporter
+```yaml
+- hosts: all
+  become: true
+  roles:
+    - role: bilalcaliskan.redis_exporter
+      vars:
+        install_redis_exporter: true
+        redis_port: 6379
+        version: 1.15.0
+```
 
-*Inside `vars/main.yml`*:
+You can also override default variables inside [vars/main.yml](vars/main.yml)*:
+```yaml
+version: 1.15.0
+```
 
-        version: 0.21.2
-        exporter_port: 9121
-        user: redis-exporter
-        group: redis-exporter
-        required_packages:
-          - firewalld
+### Example Playbook File For `Uninstallation`
 
-## Playbook for uninstall
-
-      - hosts: all
-        become: true
-        vars_files:
-          - vars/main.yml
-        roles:
-          - role: bilalcaliskan.redis_exporter
-
-*Inside `vars/main.yml`*:
-
+```yaml
+- hosts: all
+  become: true
+  roles:
+    - role: bilalcaliskan.redis_exporter
+      vars:
         install_redis_exporter: false
+```
 
-## License
+### License
 
 MIT / BSD
