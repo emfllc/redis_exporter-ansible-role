@@ -8,9 +8,9 @@ file_path: "{{ base_dir_path }}/redis_exporter-v{{ version }}.linux-amd64.tar.gz
 extracted_dir_path: "{{ base_dir_path }}/redis_exporter-v{{ version }}.linux-amd64"
 exporter_port: 9121
 redis_port: 6379
+redis_bind_localhost: true
+start_firewalld: true
 user: redis-exporter
 group: redis-exporter
 required_packages:
   - firewalld
-
-...
