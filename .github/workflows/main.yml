@@ -11,7 +11,7 @@ on:
 
 defaults:
   run:
-    working-directory: 'bilalcaliskan.node_exporter'
+    working-directory: 'bilalcaliskan.redis_exporter'
 
 jobs:
   lint:
@@ -21,7 +21,7 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v2
         with:
-          path: 'bilalcaliskan.node_exporter'
+          path: 'bilalcaliskan.redis_exporter'
 
       - name: Set up Python 3.
         uses: actions/setup-python@v2
@@ -49,7 +49,7 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v2
         with:
-          path: 'bilalcaliskan.node_exporter'
+          path: 'bilalcaliskan.redis_exporter'
 
       - name: Set up Python 3.
         uses: actions/setup-python@v2
@@ -78,4 +78,4 @@ jobs:
         uses: robertdebock/galaxy-action@1.1.0
         with:
           galaxy_api_key: ${{ secrets.GALAXY_API_KEY }}
-          path: 'bilalcaliskan.node_exporter'
+          path: 'bilalcaliskan.redis_exporter'
