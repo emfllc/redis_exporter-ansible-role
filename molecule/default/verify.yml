@@ -14,5 +14,3 @@
         host: localhost
         port: 9121
         timeout: 5
-
-...

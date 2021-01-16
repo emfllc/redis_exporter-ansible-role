@@ -1,6 +1,6 @@
 ## Redis Exporter Ansible Role
 
-[![Build Status](https://travis-ci.org/bilalcaliskan/redis_exporter-ansible-role.svg?branch=master)](https://travis-ci.org/bilalcaliskan/redis_exporter-ansible-role)
+[![CI](https://github.com/bilalcaliskan/redis_exporter-ansible-role/workflows/CI/badge.svg?event=push)](https://github.com/bilalcaliskan/redis_exporter-ansible-role/actions?query=workflow%3ACI)
 
 Installs and configures redis-exporter to expose Redis metrics to Prometheus on RHEL/CentOS 7/8 instances.
 
