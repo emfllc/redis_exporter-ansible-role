@@ -1,10 +1,12 @@
-## Redis Exporter Ansible Role
+# Redis Exporter Ansible Role
 
 [![CI](https://github.com/bilalcaliskan/redis_exporter-ansible-role/workflows/CI/badge.svg?event=push)](https://github.com/bilalcaliskan/redis_exporter-ansible-role/actions?query=workflow%3ACI)
 
-Installs and configures redis-exporter to expose Redis metrics to Prometheus on RHEL/CentOS 7/8 instances.
+Installs and configures [redis-exporter](https://github.com/oliver006/redis_exporter) on Redhat/Debian based hosts.
 
-### Requirements
+If you need also Redis, please refer to [bilalcaliskan.redis](https://github.com/bilalcaliskan/redis-ansible-role).
+
+## Requirements
 
 This role requires minimum Ansible version 2.4 and maximum Ansible version 2.9. You can install suggested version with pip:
 ```
@@ -31,18 +33,28 @@ Also note that this role requires root access, so either run it in a playbook wi
     - role: bilalcaliskan.redis_exporter
 ```
 
-### Role Variables
+## Role Variables
 See the default values in [defaults/main.yml](defaults/main.yml). You can overwrite them in [vars/main.yml](vars/main.yml) if neccessary or you can set them while running playbook.
 
-> Please note that this role will ensure that `firewalld` systemd service on your servers are started and enabled by default. If you want to stop and disable `firewalld` service, please modify below variable as false when running playbook:  
-> ```yaml  
+> Please note that this role will ensure that `firewalld` systemd service on your servers are started and enabled by default. If you want to stop and disable `firewalld` service, please modify below variable as false when running playbook:
+> ```yaml
 > firewalld_enabled: false
 
-### Dependencies
+## Dependencies
 
 None
 
-### Example Playbook File For `Installation`
+## Examples
+### Inventory
+
+```
+[all]
+redis01.example.com
+redis02.example.com
+redis03.example.com
+```
+
+### Installation
 
 ```yaml
 - hosts: all
@@ -55,12 +67,7 @@ None
         version: 1.15.0
 ```
 
-You can also override default variables inside [vars/main.yml](vars/main.yml)*:
-```yaml
-version: 1.15.0
-```
-
-### Example Playbook File For `Uninstallation`
+### Uninstallation
 
 ```yaml
 - hosts: all
@@ -71,6 +78,12 @@ version: 1.15.0
         install_redis_exporter: false
 ```
 
-### License
+## Development
+This project requires below tools while developing:
+- [Ansible 2.4 or higher](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+- [pre-commit](https://pre-commit.com/)
+- [ansible-lint](https://ansible-lint.readthedocs.io/en/latest/installing.html#using-pip-or-pipx) - required by [pre-commit](https://pre-commit.com/)
+- [Bash shell](https://www.gnu.org/software/bash/) - required by [pre-commit](https://pre-commit.com/)
 
-MIT / BSD
+## License
+Apache License 2.0
