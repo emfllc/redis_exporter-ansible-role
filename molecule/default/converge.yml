@@ -5,4 +5,7 @@
   become: true
   roles:
     - role: bilalcaliskan.redis
+      vars:
+        os_enable_tuned: false
+        os_disable_swap: false
     - role: bilalcaliskan.redis_exporter
