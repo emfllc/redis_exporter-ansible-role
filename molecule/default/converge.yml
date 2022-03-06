@@ -3,7 +3,6 @@
 - name: Converge
   hosts: all
   become: true
-  ignore_errors: true
   roles:
     - role: bilalcaliskan.redis
     - role: bilalcaliskan.redis_exporter
