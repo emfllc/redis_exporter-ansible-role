@@ -8,7 +8,7 @@ Type=simple
 User={{ user }}
 Group={{ group }}
 ExecReload=/bin/kill -HUP
-ExecStart=/usr/local/bin/redis_exporter --web.listen-address=:{{ exporter_port }} --redis.addr=redis://{% if redis_bind_localhost == true %}localhost{% else %}{{ ansible_default_ipv4.address }}{% endif %}:{{ redis_port }}
+ExecStart=/usr/local/bin/redis_exporter --web.listen-address=:{{ exporter_port }} --redis.addr=redis://{% if redis_bind_localhost == true %}localhost{% else %}{{ ansible_default_ipv4.address }}{% endif %}:{{ redis_port }} --redis.password={{ redis_password }}
 
 SyslogIdentifier=redis-exporter
 Restart=always
